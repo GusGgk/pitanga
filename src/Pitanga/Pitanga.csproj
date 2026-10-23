@@ -1,0 +1,54 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <!-- TFM com versão do Windows SDK: habilita as APIs WinRT nativas (Windows.Data.Pdf) -->
+    <TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
+    <SupportedOSPlatformVersion>10.0.17763.0</SupportedOSPlatformVersion>
+    <UseWPF>true</UseWPF>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>Assets\Pitanga.ico</ApplicationIcon>
+    <AssemblyName>Pitanga</AssemblyName>
+    <RootNamespace>Pitanga</RootNamespace>
+    <!-- A CI sobrescreve com a versão da tag (v1.2.3 → -p:Version=1.2.3) -->
+    <Version>1.0.0</Version>
+    <Product>Pitanga</Product>
+    <Authors>GusGk</Authors>
+    <Company>GusGk</Company>
+    <Copyright>Copyright © 2026 GusGk</Copyright>
+    <Description>Drag a file, tap Shift, convert or edit it from a radial menu. Runs 100% locally.</Description>
+    <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- O SDK de WPF tira System.IO dos usings implícitos (conflito Path x Shapes.Path) -->
+    <Using Include="System.IO" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- O ícone entra no .exe via ApplicationIcon; a bandeja o lê de lá (ExtractIconEx) -->
+    <None Remove="Assets\Pitanga-256.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- ImageMagick nativo: PNG, WEBP, HEIC, AVIF, BMP, TIFF, PDF (escrita) -->
+    <PackageReference Include="Magick.NET-Q8-AnyCPU" Version="14.*" />
+    <!-- Extração de texto e merge de PDF, 100% .NET -->
+    <PackageReference Include="PdfPig" Version="0.1.*" />
+    <!-- Geração de .docx -->
+    <PackageReference Include="DocumentFormat.OpenXml" Version="3.*" />
+  </ItemGroup>
+
+  <!--
+    Caminhos longos fazem a 2ª passada do compilador XAML (telas com controles próprios) falhar em
+    silêncio: o .exe sai sem o menu e sem as ferramentas. Melhor quebrar o build com uma mensagem clara.
+  -->
+  <Target Name="PitangaCheckPathLength" BeforeTargets="BeforeBuild">
+    <Error Condition="$(MSBuildProjectDirectory.Length) &gt; 120"
+           Text="Project path is too long ($(MSBuildProjectDirectory.Length) chars). Clone the repository into a short folder such as C:\dev\Pitanga and build there." />
+  </Target>
+
+</Project>

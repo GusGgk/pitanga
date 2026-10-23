@@ -1,0 +1,105 @@
+﻿<ui:MacWindow x:Class="Pitanga.Tools.AddBackgroundWindow"
+              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+              xmlns:ui="clr-namespace:Pitanga.UI"
+              Title="Add Background" Width="1000" Height="860" MinWidth="780" MinHeight="660">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Border Margin="16,0,16,0" CornerRadius="10" Background="{StaticResource CanvasBrush}" ClipToBounds="True">
+            <Viewbox x:Name="PreviewBox" Margin="32" Stretch="Uniform"/>
+        </Border>
+
+        <Grid Grid.Row="1" Margin="26,16,26,18">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="112"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="64"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="36"/>
+                <RowDefinition Height="36"/>
+                <RowDefinition Height="36"/>
+                <RowDefinition Height="44"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Text="Background" Style="{StaticResource FieldLabel}" VerticalAlignment="Top" Margin="0,7,0,0"/>
+            <WrapPanel x:Name="Swatches" Grid.Column="1" Grid.ColumnSpan="2" Margin="0,0,0,4"/>
+
+            <TextBlock Grid.Row="1" Text="Padding" Style="{StaticResource FieldLabel}"/>
+            <Slider x:Name="PaddingSlider" Grid.Row="1" Grid.Column="1" Style="{StaticResource MacSlider}" ValueChanged="Option_Changed"/>
+            <TextBlock x:Name="PaddingValue" Grid.Row="1" Grid.Column="2" Style="{StaticResource ValueLabel}"/>
+
+            <TextBlock Grid.Row="2" Text="Corners" Style="{StaticResource FieldLabel}"/>
+            <Slider x:Name="CornersSlider" Grid.Row="2" Grid.Column="1" Style="{StaticResource MacSlider}" ValueChanged="Option_Changed"/>
+            <TextBlock x:Name="CornersValue" Grid.Row="2" Grid.Column="2" Style="{StaticResource ValueLabel}"/>
+
+            <TextBlock Grid.Row="3" Text="Shadow" Style="{StaticResource FieldLabel}"/>
+            <Slider x:Name="ShadowSlider" Grid.Row="3" Grid.Column="1" Style="{StaticResource MacSlider}" ValueChanged="Option_Changed"/>
+            <TextBlock x:Name="ShadowValue" Grid.Row="3" Grid.Column="2" Style="{StaticResource ValueLabel}"/>
+
+            <TextBlock Grid.Row="4" Text="Aspect Ratio" Style="{StaticResource FieldLabel}"/>
+            <Border Grid.Row="4" Grid.Column="1" Style="{StaticResource SegmentHost}">
+                <StackPanel Orientation="Horizontal">
+                    <RadioButton x:Name="AutoRatio" Style="{StaticResource Segment}" GroupName="bgratio" Content="Auto" Tag="0" IsChecked="True" Checked="Ratio_Checked"/>
+                    <RadioButton Style="{StaticResource Segment}" GroupName="bgratio" Content="1:1" Tag="1" Checked="Ratio_Checked"/>
+                    <RadioButton Style="{StaticResource Segment}" GroupName="bgratio" Content="4:3" Tag="1.3333333333333333" Checked="Ratio_Checked"/>
+                    <RadioButton Style="{StaticResource Segment}" GroupName="bgratio" Content="16:9" Tag="1.7777777777777777" Checked="Ratio_Checked"/>
+                </StackPanel>
+            </Border>
+
+            <StackPanel Grid.Row="5" Grid.ColumnSpan="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
+                <Button Content="Reset" Style="{StaticResource SecondaryButton}" Margin="0,0,10,0" Click="Reset_Click"/>
+                <Button x:Name="SaveButton" Content="Save with Background" Style="{StaticResource PrimaryButton}" Click="Save_Click" IsDefault="True"/>
+            </StackPanel>
+        </Grid>
+
+        <!-- Seletor de cor customizada -->
+        <Popup x:Name="ColorPopup" StaysOpen="False" Placement="Top" AllowsTransparency="True" PopupAnimation="Fade" VerticalOffset="-6">
+            <Grid Margin="14">
+                <Border CornerRadius="12" Background="White">
+                    <Border.Effect>
+                        <DropShadowEffect BlurRadius="20" ShadowDepth="4" Direction="270" Opacity="0.22"/>
+                    </Border.Effect>
+                </Border>
+                <Border CornerRadius="12" BorderBrush="#1F000000" BorderThickness="1" Padding="14" Width="260">
+                    <StackPanel>
+                        <Grid Margin="0,0,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Border x:Name="CustomPreview" Width="36" Height="36" CornerRadius="18" BorderBrush="#24000000" BorderThickness="1"/>
+                            <TextBox x:Name="HexBox" Grid.Column="1" Style="{StaticResource FieldBox}" Width="Auto" Margin="12,0,0,0"
+                                     KeyDown="Hex_KeyDown" LostKeyboardFocus="Hex_LostFocus"/>
+                        </Grid>
+                        <TextBlock Text="Hue" Style="{StaticResource Caption}"/>
+                        <Border Height="6" CornerRadius="3" Margin="0,4,0,0">
+                            <Border.Background>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                    <GradientStop Color="#FF0000" Offset="0"/>
+                                    <GradientStop Color="#FFFF00" Offset="0.167"/>
+                                    <GradientStop Color="#00FF00" Offset="0.333"/>
+                                    <GradientStop Color="#00FFFF" Offset="0.5"/>
+                                    <GradientStop Color="#0000FF" Offset="0.667"/>
+                                    <GradientStop Color="#FF00FF" Offset="0.833"/>
+                                    <GradientStop Color="#FF0000" Offset="1"/>
+                                </LinearGradientBrush>
+                            </Border.Background>
+                        </Border>
+                        <Slider x:Name="HueSlider" Style="{StaticResource MacSlider}" Minimum="0" Maximum="360" ValueChanged="Hsv_Changed"/>
+                        <TextBlock Text="Saturation" Style="{StaticResource Caption}" Margin="0,6,0,0"/>
+                        <Slider x:Name="SatSlider" Style="{StaticResource MacSlider}" Minimum="0" Maximum="100" ValueChanged="Hsv_Changed"/>
+                        <TextBlock Text="Brightness" Style="{StaticResource Caption}" Margin="0,6,0,0"/>
+                        <Slider x:Name="ValSlider" Style="{StaticResource MacSlider}" Minimum="0" Maximum="100" ValueChanged="Hsv_Changed"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </Popup>
+    </Grid>
+</ui:MacWindow>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Modelo do manifesto MSIX para a Microsoft Store.
+  Os valores entre $…$ são preenchidos por build-msix.ps1 com os dados do seu cadastro no Partner Center
+  (Product identity → Package/Identity/Name e Publisher). Veja docs/STORE.md.
+-->
+<Package
+  xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
+  xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
+  xmlns:desktop="http://schemas.microsoft.com/appx/manifest/desktop/windows10"
+  xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
+  IgnorableNamespaces="uap desktop rescap">
+
+  <Identity Name="$IDENTITY_NAME$" Publisher="$PUBLISHER$" Version="$VERSION$" ProcessorArchitecture="x64" />
+
+  <Properties>
+    <DisplayName>Pitanga</DisplayName>
+    <PublisherDisplayName>$PUBLISHER_DISPLAY_NAME$</PublisherDisplayName>
+    <Logo>Assets\StoreLogo.png</Logo>
+  </Properties>
+
+  <Dependencies>
+    <TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.17763.0" MaxVersionTested="10.0.26100.0" />
+  </Dependencies>
+
+  <Resources>
+    <Resource Language="en-us" />
+    <Resource Language="pt-br" />
+  </Resources>
+
+  <Applications>
+    <Application Id="Pitanga" Executable="Pitanga.exe" EntryPoint="Windows.FullTrustApplication">
+      <uap:VisualElements
+        DisplayName="Pitanga"
+        Description="Drag a file, tap Shift, convert or edit it from a radial menu. Runs 100% locally."
+        BackgroundColor="transparent"
+        Square150x150Logo="Assets\Square150x150Logo.png"
+        Square44x44Logo="Assets\Square44x44Logo.png" />
+      <Extensions>
+        <!-- Dentro do pacote, "iniciar com o Windows" usa esta tarefa (o código detecta o modo pacote). -->
+        <desktop:Extension Category="windows.startupTask" Executable="Pitanga.exe" EntryPoint="Windows.FullTrustApplication">
+          <desktop:StartupTask TaskId="PitangaStartup" Enabled="true" DisplayName="Pitanga" />
+        </desktop:Extension>
+      </Extensions>
+    </Application>
+  </Applications>
+
+  <Capabilities>
+    <!-- App de desktop completo: hooks globais de teclado/mouse, automação do Office, arquivos do usuário -->
+    <rescap:Capability Name="runFullTrust" />
+  </Capabilities>
+</Package>

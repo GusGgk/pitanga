@@ -1,0 +1,61 @@
+﻿<ui:MacWindow x:Class="Pitanga.Tools.AnnotateWindow"
+              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+              xmlns:ui="clr-namespace:Pitanga.UI"
+              Title="Annotate" Width="1000" Height="800" MinWidth="780" MinHeight="560">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Grid Margin="22,0,22,12">
+            <StackPanel x:Name="AnnotateBar" Orientation="Horizontal">
+                <Border Style="{StaticResource SegmentHost}">
+                    <StackPanel Orientation="Horizontal">
+                        <RadioButton Style="{StaticResource Segment}" GroupName="tool" Content="Pen" Tag="pen" IsChecked="True" Checked="Tool_Checked"/>
+                        <RadioButton Style="{StaticResource Segment}" GroupName="tool" Content="Highlighter" Tag="highlighter" Checked="Tool_Checked"/>
+                        <RadioButton Style="{StaticResource Segment}" GroupName="tool" Content="Eraser" Tag="eraser" Checked="Tool_Checked"/>
+                    </StackPanel>
+                </Border>
+                <StackPanel x:Name="ColorSwatches" Orientation="Horizontal" Margin="18,0,0,0" VerticalAlignment="Center"/>
+                <Border Style="{StaticResource SegmentHost}" Margin="12,0,0,0">
+                    <StackPanel Orientation="Horizontal">
+                        <RadioButton Style="{StaticResource Segment}" GroupName="size" Content="S" Tag="0.004" Checked="Size_Checked"/>
+                        <RadioButton Style="{StaticResource Segment}" GroupName="size" Content="M" Tag="0.008" IsChecked="True" Checked="Size_Checked"/>
+                        <RadioButton Style="{StaticResource Segment}" GroupName="size" Content="L" Tag="0.016" Checked="Size_Checked"/>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+
+            <StackPanel x:Name="RedactBar" Orientation="Horizontal" Visibility="Collapsed">
+                <Border Style="{StaticResource SegmentHost}">
+                    <StackPanel Orientation="Horizontal">
+                        <RadioButton Style="{StaticResource Segment}" GroupName="redact" Content="Black" Tag="black" IsChecked="True" Checked="RedactStyle_Checked"/>
+                        <RadioButton Style="{StaticResource Segment}" GroupName="redact" Content="Pixelate" Tag="pixelate" Checked="RedactStyle_Checked"/>
+                    </StackPanel>
+                </Border>
+                <TextBlock Text="Drag over the areas you want to hide. Metadata is removed on save." Style="{StaticResource Caption}" Margin="16,0,0,0"/>
+            </StackPanel>
+        </Grid>
+
+        <Border Grid.Row="1" Margin="16,0,16,0" CornerRadius="10" Background="{StaticResource CanvasBrush}" ClipToBounds="True">
+            <Viewbox Margin="24" Stretch="Uniform">
+                <!-- Superfície em pixels da imagem original: traços e retângulos já nascem na escala certa -->
+                <Grid x:Name="Surface" ClipToBounds="True">
+                    <Image x:Name="SurfaceImage" Stretch="Fill"/>
+                    <InkCanvas x:Name="Ink" Background="Transparent"/>
+                    <Canvas x:Name="RedactLayer" Background="Transparent"
+                            MouseLeftButtonDown="Redact_MouseDown" MouseMove="Redact_MouseMove" MouseLeftButtonUp="Redact_MouseUp"/>
+                </Grid>
+            </Viewbox>
+        </Border>
+
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="22,14,22,18">
+            <Button Content="Undo" Style="{StaticResource SecondaryButton}" Margin="0,0,10,0" Click="Undo_Click"/>
+            <Button Content="Clear" Style="{StaticResource SecondaryButton}" Margin="0,0,10,0" Click="Clear_Click"/>
+            <Button x:Name="SaveButton" Content="Save" Style="{StaticResource PrimaryButton}" MinWidth="96" Click="Save_Click"/>
+        </StackPanel>
+    </Grid>
+</ui:MacWindow>
